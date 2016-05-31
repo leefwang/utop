@@ -25,7 +25,7 @@ router.all('/signal', function(req, res, next) {
 
 router.all('/send', function(req, res, next) {
   res.json({
-    msg: latitude,
+    msg: signal,
     latitude: latitude,
     longitude: longitude,
     signal: signal
