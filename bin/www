@@ -39,16 +39,28 @@ var io = require('socket.io').listen(httpServer);
 io.sockets.on('connection',function(socket){
   socket.emit('toclient',{msg:'Welcome !'});
   socket.on('fromclient',function(data){
-    request('http://localhost:8000/send', function (error, response, body) {
-      if (!error && response.statusCode == 200) {
-        var obj = eval("("+ body + ")");
-        console.log(obj);
+    if (data.latitude && data.longitude) {
+      request('http://localhost:8000/send', function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+          var obj = eval("("+ body + ")");
 
-        socket.broadcast.emit('toclient', obj); // 자신을 제외하고 다른 클라이언트에게 보냄
-        socket.emit('toclient', obj); // 해당 클라이언트에게만 보냄. 다른 클라이언트에 보낼려면?
-        console.log('Message from client :'+data.msg);
-      }
-    });
+          socket.broadcast.emit('toclient', obj); // 자신을 제외하고 다른 클라이언트에게 보냄
+          socket.emit('toclient', obj); // 해당 클라이언트에게만 보냄. 다른 클라이언트에 보낼려면?
+          console.log('Message from client :'+data.msg);
+        }
+      });
+    } else {
+      request('http://localhost:8000/send', function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+          var obj = eval("("+ body + ")");
+          console.log(obj);
+
+          socket.broadcast.emit('toclient', obj); // 자신을 제외하고 다른 클라이언트에게 보냄
+          socket.emit('toclient', obj); // 해당 클라이언트에게만 보냄. 다른 클라이언트에 보낼려면?
+          console.log('Message from client :'+data.msg);
+        }
+      });
+    }
   })
 });
 
